@@ -16,7 +16,7 @@ datasource db {
 model institute {
   id          Int         @id @default(autoincrement())
   type        String
-  user        user[]
+  student        student[]
   board       board[]      
 }
 
@@ -24,20 +24,20 @@ model board {
   id              Int         @id @default(autoincrement())
   board_name      String
   institute_id    Int         @default(2)
-  user            user[]
+  student            student[]
   institute       institute   @relation(fields:[institute_id], references:[id])
 }
 
 model mediums {
   id              Int         @id @default(autoincrement())
   mediums_name    String
-  user            user[]
+  student            student[]
 }
 
 model classcategories {
   id                   Int         @id @default(autoincrement())
   classcategories_nm   String
-  user                 user[]
+  student                 student[]
   standards            standards[] 
 }
 
@@ -45,7 +45,7 @@ model standards {
   id                   Int         @id @default(autoincrement())
   standard             String
   categories_id        Int        
-  user                 user[]
+  student              student[]
   classcategories      classcategories @relation(fields:[categories_id], references:[id])
 }
 
@@ -55,11 +55,11 @@ model subjects {
   usersubjects          usersubjects[]
 }
 
-model user {
+model student {
   id                   Int                @id @default(autoincrement())
-  user_name            String
-  user_email           String
-  user_password        String       
+  student_name         String
+  student_email        String
+  student_password     String       
   institute_type_id    Int
   board_id             Int  
   medium_id            Int
@@ -82,7 +82,7 @@ model usersubjects {
  user_id            Int
  subject_id         Int
 
-user                user               @relation(fields:[user_id], references:[id])
+student                student               @relation(fields:[user_id], references:[id])
 subjects            subjects           @relation(fields:[subject_id], references:[id])
 } 
 
@@ -100,5 +100,5 @@ model role {
   id                  Int    @id @default(autoincrement())
   role_name           String
   admin               admin[]
-  user                user[]
+  student            student[]
 }

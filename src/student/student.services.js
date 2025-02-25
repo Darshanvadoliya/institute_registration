@@ -2,7 +2,7 @@ let { PrismaClient } = require('@prisma/client');
 let prisma = new PrismaClient();
 const bcrypt = require('bcrypt')
 
-let addUser = async (data) => {
+let addStudent = async (data) => {
     let resData = {
         status: 400,
         data: {
@@ -12,17 +12,17 @@ let addUser = async (data) => {
 
     try {
         const slet = 10
-        const hashpassword = await bcrypt.hash(data.user_password, slet)
-        data.user_password = hashpassword
+        const hashpassword = await bcrypt.hash(data.student_password, slet)
+        data.student_password = hashpassword
         // console.log("data = ", data.subject_id);
 
         // let ids = data.subjects.connect.map(item => item.id).join('')
         // console.log(Number(ids));
         // subject_id = Number(ids)
 
-        let isUser = await prisma.user.findFirst({
+        let isUser = await prisma.student.findFirst({
             where: {
-                user_email: data.user_email
+                student_email: data.student_email
             }
         })
 
@@ -30,11 +30,11 @@ let addUser = async (data) => {
             resData = {
                 status: 400,
                 data: {
-                    message: "User Already Exist.."
+                    message: "student Already Exist.."
                 }
             }
         } else {
-            let addUser = await prisma.user.create({
+            let addUser = await prisma.student.create({
                 data: data,
             })
 
@@ -53,7 +53,7 @@ let addUser = async (data) => {
             resData = {
                 status: 200,
                 data: {
-                    message: "User Create SuccessFully..",
+                    message: "student Create SuccessFully..",
                     data: addUser,
                 }
             }
@@ -71,7 +71,7 @@ let addUser = async (data) => {
 }
 
 // get user
-let getUser = async (data) => {
+let getStudent = async (data) => {
     let resData = {
         status: 400,
         data: {
@@ -80,11 +80,11 @@ let getUser = async (data) => {
     }
 
     try {
-        let getUser = await prisma.user.findMany({
+        let getUser = await prisma.student.findMany({
             where: data,
             select: {
-                user_name: true,
-                user_email: true,
+                student_name: true,
+                student_email: true,
                 institute: { select: { type: true } },
                 board: { select: { board_name: true } },
                 mediums: { select: { mediums_name: true } },
@@ -93,7 +93,7 @@ let getUser = async (data) => {
                 // subjects: { select: { subject_name: true } },
             }
         })
-        console.log(data.id);
+        // console.log(data.id);
         
         let usersubjects = await prisma.usersubjects.findMany({
             where: {
@@ -112,14 +112,14 @@ let getUser = async (data) => {
             resData = {
                 status: 400,
                 data: {
-                    message: "User Not Found.."
+                    message: "student Not Found.."
                 }
             }
         } else {
             resData = {
                 status: 200,
                 data: {
-                    message: "User Create SuccessFully..",
+                    message: "student get SuccessFully...",
                     data: getUser,
                     subject: usersubjects
                 }
@@ -135,7 +135,7 @@ let getUser = async (data) => {
 
 // gWT aLL uSER
 
-let getAllUser = async () => {
+let getAllStudent = async (data) => {
     let resData = {
         status: 400,
         data: {
@@ -144,15 +144,28 @@ let getAllUser = async () => {
     }
 
     try {
-        let getAllUser = await prisma.user.findMany({
+        let getAllUser = await prisma.student.findMany({
             select: {
-                user_name: true,
-                user_email: true,
+                student_name: true,
+                student_email: true,
                 institute: { select: { type: true } },
                 board: { select: { board_name: true } },
                 mediums: { select: { mediums_name: true } },
                 classcategories: { select: { classcategories_nm: true } },
                 standards: { select: { standard: true } },
+            }
+        })
+
+        let usersubjects = await prisma.usersubjects.findMany({
+            where: {
+                user_id: data.id
+            },
+            select:{
+                subjects:{
+                    select:{
+                        subject_name:true
+                    }
+                }
             }
         })
 
@@ -167,8 +180,9 @@ let getAllUser = async () => {
             resData = {
                 status: 200,
                 data: {
-                    message: "User Create SuccessFully..",
+                    message: "all Student",
                     data: getAllUser,
+                    subject:usersubjects
                 }
             }
         }
@@ -180,7 +194,7 @@ let getAllUser = async () => {
     return resData
 }
 module.exports = {
-    addUser,
-    getUser,
-    getAllUser
+    addStudent,
+    getStudent,
+    getAllStudent
 }

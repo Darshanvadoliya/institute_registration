@@ -9,6 +9,7 @@ routes.post('/addBoard', authentication([1]), async (req,res) =>{
     res.status(board.status).send(board)
 })
 
+
 // view board
 routes.get('/viewBoard', async (req, res) =>{
     let board = await boardController.viewBoard(req.body)
