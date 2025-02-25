@@ -20,13 +20,13 @@ let addStudent = async (data) => {
         // console.log(Number(ids));
         // subject_id = Number(ids)
 
-        let isUser = await prisma.student.findFirst({
+        let isStudent = await prisma.student.findFirst({
             where: {
                 student_email: data.student_email
             }
         })
 
-        if (isUser) {
+        if (isStudent) {
             resData = {
                 status: 400,
                 data: {
@@ -34,7 +34,7 @@ let addStudent = async (data) => {
                 }
             }
         } else {
-            let addUser = await prisma.student.create({
+            let addStudent = await prisma.student.create({
                 data: data,
             })
 
@@ -54,7 +54,7 @@ let addStudent = async (data) => {
                 status: 200,
                 data: {
                     message: "student Create SuccessFully..",
-                    data: addUser,
+                    data: addStudent,
                 }
             }
         }
@@ -80,7 +80,7 @@ let getStudent = async (data) => {
     }
 
     try {
-        let getUser = await prisma.student.findMany({
+        let getStudent = await prisma.student.findMany({
             where: data,
             select: {
                 student_name: true,
@@ -108,7 +108,7 @@ let getStudent = async (data) => {
             }
         })
 
-        if (getUser.length === 0) {
+        if (getStudent.length === 0) {
             resData = {
                 status: 400,
                 data: {
@@ -120,7 +120,7 @@ let getStudent = async (data) => {
                 status: 200,
                 data: {
                     message: "student get SuccessFully...",
-                    data: getUser,
+                    data: getStudent,
                     subject: usersubjects
                 }
             }
@@ -144,7 +144,7 @@ let getAllStudent = async (data) => {
     }
 
     try {
-        let getAllUser = await prisma.student.findMany({
+        let getAllStudent = await prisma.student.findMany({
             select: {
                 student_name: true,
                 student_email: true,
@@ -181,7 +181,7 @@ let getAllStudent = async (data) => {
                 status: 200,
                 data: {
                     message: "all Student",
-                    data: getAllUser,
+                    data: getAllStudent,
                     subject:usersubjects
                 }
             }
