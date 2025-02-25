@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model institute {
+  id          Int         @id @default(autoincrement())
+  type        String
+  user        user[]
+  board       board[]      
+}
+
+model board {
+  id              Int         @id @default(autoincrement())
+  board_name      String
+  institute_id    Int         @default(2)
+  user            user[]
+  institute       institute   @relation(fields:[institute_id], references:[id])
+}
+
+model mediums {
+  id              Int         @id @default(autoincrement())
+  mediums_name    String
+  user            user[]
+}
+
+model classcategories {
+  id                   Int         @id @default(autoincrement())
+  classcategories_nm   String
+  user                 user[]
+  standards            standards[] 
+}
+
+model standards {
+  id                   Int         @id @default(autoincrement())
+  standard             String
+  categories_id        Int        
+  user                 user[]
+  classcategories      classcategories @relation(fields:[categories_id], references:[id])
+}
+
+model subjects {
+  id                   Int         @id @default(autoincrement())
+  subject_name         String
+  usersubjects          usersubjects[]
+}
+
+model user {
+  id                   Int                @id @default(autoincrement())
+  user_name            String
+  user_email           String
+  user_password        String       
+  institute_type_id    Int
+  board_id             Int  
+  medium_id            Int
+  class_categories_id  Int
+  standards_id         Int                    
+
+  institute            institute          @relation(fields:[institute_type_id], references:[id])
+  board                board              @relation(fields:[board_id], references:[id])
+  mediums              mediums            @relation(fields:[medium_id], references:[id])
+  classcategories      classcategories    @relation(fields:[class_categories_id], references:[id])
+  standards            standards          @relation(fields:[standards_id], references:[id])
+
+  role_id              Int
+  role                 role               @relation(fields:[role_id], references:[id])
+  usersubjects          usersubjects[]
+}
+
+model usersubjects {
+ id                 Int                    @id @default(autoincrement())
+ user_id            Int
+ subject_id         Int
+
+user                user               @relation(fields:[user_id], references:[id])
+subjects            subjects           @relation(fields:[subject_id], references:[id])
+} 
+
+model admin {
+  id                Int         @id @default(autoincrement())
+  admin_name        String
+  admin_email       String     
+  admin_password    String      
+  role_id           Int
+
+  role              role    @relation(fields:[role_id], references:[id])  
+}
+
+model role {
+  id                  Int    @id @default(autoincrement())
+  role_name           String
+  admin               admin[]
+  user                user[]
+}
